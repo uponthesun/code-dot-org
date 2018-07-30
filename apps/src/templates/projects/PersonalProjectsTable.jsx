@@ -13,7 +13,7 @@ import {
 } from './projectConstants';
 import {tableLayoutStyles, sortableOptions} from "../tables/tableConstants";
 import PersonalProjectsTableActionsCell from './PersonalProjectsTableActionsCell';
-
+import PersonalProjectsNameCell from './PersonalProjectsNameCell';
 const PROJECT_DEFAULT_IMAGE = '/blockly/media/projects/project_default.png';
 
 const THUMBNAIL_SIZE = 65;
@@ -86,16 +86,25 @@ const thumbnailFormatter = function (thumbnailUrl, {rowData}) {
 };
 
 const nameFormatter = (projectName, {rowData}) => {
-  const url = `/projects/${rowData.type}/${rowData.channel}/`;
-  return <a style={tableLayoutStyles.link} href={url} target="_blank">{projectName}</a>;
+  const updatedName = rowData.isEditing ? this.props.editingData[rowData.id].name : '';
+  return (
+    <PersonalProjectsNameCell
+      id={rowData.id}
+      projectId={rowData.channel}
+      projectType={rowData.type}
+      projectName={projectName}
+      updatedName={updatedName}
+      isEditing={rowData.isEditing}
+    />
+  );
 };
 
 const actionsFormatter = (actions, {rowData}) => {
   return (
     <PersonalProjectsTableActionsCell
-      isPublished = {!!rowData.publishedAt}
-      projectId = {rowData.channel}
-      projectType = {rowData.type}
+      isPublished={!!rowData.publishedAt}
+      projectId={rowData.channel}
+      projectType={rowData.type}
     />
   );
 };
@@ -116,6 +125,7 @@ const publishedAtFormatter = (publishedAt) => {
 class PersonalProjectsTable extends React.Component {
   static propTypes = {
     personalProjectsList: PropTypes.arrayOf(personalProjectDataPropType).isRequired,
+    editingData: PropTypes.object,
   };
 
   state = {

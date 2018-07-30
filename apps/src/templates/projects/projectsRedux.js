@@ -168,3 +168,49 @@ export function publishSuccess(lastPublishedAt, lastPublishedProjectData) {
   return {type: PUBLISH_SUCCESS, lastPublishedAt,
   lastPublishedProjectData};
 }
+
+export function unpublishProject(projectId) {
+  return dispatch => {
+    dispatch({type: UNPUBLISH_REQUEST});
+    return new Promise((resolve, reject) => {
+      channelsApi.withProjectId(projectId).ajax(
+        'POST',
+        'unpublish',
+        () => {
+          dispatch({
+            type: UNPUBLISH_SUCCESS,
+            projectId: projectId,
+          });
+          resolve();
+        },
+        err => {
+          dispatch({type: UNPUBLISH_FAILURE});
+          reject(err);
+        },
+        null
+      );
+    });
+  };
+}
+export function saveProjectName(projectId, updatedName) {
+  return dispatch => {
+    dispatch({type: SAVE_PROJECT_NAME});
+    return new Promise((resolve, reject) => {
+      channelsApi.withProjectId(projectId).ajax(
+        'POST',
+        'unpublish',
+        () => {
+          dispatch({
+            type: SAVE_SUCCESS,
+          });
+          resolve();
+        },
+        err => {
+          dispatch({type: SAVE_FAILURE});
+          reject(err);
+        },
+        null
+      );
+    });
+  };
+}

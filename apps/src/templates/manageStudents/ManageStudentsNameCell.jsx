@@ -63,7 +63,7 @@ class ManageStudentNameCell extends Component {
           </div>
         }
       </div>
-      );
+    );
   }
 }
 
