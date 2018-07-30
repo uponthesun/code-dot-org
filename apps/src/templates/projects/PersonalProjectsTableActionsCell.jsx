@@ -10,7 +10,8 @@ import {showPublishDialog} from './publishDialog/publishDialogRedux';
 import {
   startRenamingProject,
   saveProjectName,
-  cancelRenamingProject
+  cancelRenamingProject,
+  unpublishProject,
 } from './projectsRedux';
 
 export const styles = {
@@ -31,6 +32,7 @@ class PersonalProjectsTableActionsCell extends Component {
     cancelRenamingProject: PropTypes.func,
     isSaving: PropTypes.bool,
     disableSaving: PropTypes.bool,
+    unpublishProject: PropTypes.func.isRequired,
   };
 
   state = {
@@ -57,6 +59,10 @@ class PersonalProjectsTableActionsCell extends Component {
     this.props.cancelRenamingProject(this.props.projectId);
   };
 
+  onUnpublish = () => {
+    this.props.unpublishProject(this.props.projectId);
+  };
+
   render() {
     const {isRenaming} = this.props;
 
@@ -76,7 +82,7 @@ class PersonalProjectsTableActionsCell extends Component {
             </PopUpMenu.Item>
             {this.props.isPublished && (
               <PopUpMenu.Item
-                onClick={() => console.log("Unpublish was clicked")}
+                onClick={this.onUnpublish}
               >
                 {i18n.unpublish()}
               </PopUpMenu.Item>
@@ -122,6 +128,9 @@ class PersonalProjectsTableActionsCell extends Component {
 export default connect(state => ({}), dispatch => ({
   showPublishDialog(projectId, projectType) {
     dispatch(showPublishDialog(projectId, projectType));
+  },
+  unpublishProject(projectId) {
+    dispatch(unpublishProject(projectId));
   },
   startRenamingProject(projectId) {
     dispatch(startRenamingProject(projectId));
