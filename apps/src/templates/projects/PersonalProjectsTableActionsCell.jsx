@@ -25,8 +25,9 @@ class PersonalProjectsTableActionsCell extends Component {
     isPublished: PropTypes.bool.isRequired,
     projectId: PropTypes.string.isRequired,
     projectType: PropTypes.string.isRequired,
+    updatedName: PropTypes.string,
     showPublishDialog: PropTypes.func.isRequired,
-    isRenaming: PropTypes.bool,
+    isEditing: PropTypes.bool,
     startRenamingProject: PropTypes.func,
     saveProjectName: PropTypes.func,
     cancelRenamingProject: PropTypes.func,
@@ -48,7 +49,7 @@ class PersonalProjectsTableActionsCell extends Component {
   };
 
   onRename = () => {
-    this.props.startRenamingProject(this.props.projectId);
+    this.props.startRenamingProject(this.props.projectId, this.props.updatedName);
   };
 
   onSave = () => {
@@ -64,11 +65,11 @@ class PersonalProjectsTableActionsCell extends Component {
   };
 
   render() {
-    const {isRenaming} = this.props;
+    const {isEditing} = this.props;
 
     return (
       <div>
-        {!isRenaming  &&
+        {!isEditing  &&
           <QuickActionsCell>
             <PopUpMenu.Item
               onClick={this.onRename}
@@ -104,7 +105,7 @@ class PersonalProjectsTableActionsCell extends Component {
             </PopUpMenu.Item>
           </QuickActionsCell>
         }
-        {isRenaming &&
+        {isEditing &&
           <div>
             <Button
               onClick={this.onSave}
@@ -113,6 +114,7 @@ class PersonalProjectsTableActionsCell extends Component {
               disabled={this.props.isSaving || this.props.disableSaving}
               style={styles.saveButton}
             />
+            <br/>
             <Button
               onClick={this.onCancel}
               color={Button.ButtonColor.gray}
@@ -132,8 +134,8 @@ export default connect(state => ({}), dispatch => ({
   unpublishProject(projectId) {
     dispatch(unpublishProject(projectId));
   },
-  startRenamingProject(projectId) {
-    dispatch(startRenamingProject(projectId));
+  startRenamingProject(projectId, updatedName) {
+    dispatch(startRenamingProject(projectId, updatedName));
   },
   saveProjectName(projectId, updatedName) {
     dispatch(saveProjectName(projectId, updatedName));

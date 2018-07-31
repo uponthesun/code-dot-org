@@ -138,24 +138,40 @@ function personalProjectsList(state = initialPersonalProjectsList, action) {
         isUnpublishPending: false,
       };
     case START_RENAMING_PROJECT:
+      var projectBeingRenamed = action.projectId;
+
+      var projectBeingRenamedIndex = state.projects.findIndex(project => project.channel = projectBeingRenamed);
+
+      var updatedEditing = [...state.projects];
+      updatedEditing[projectBeingRenamedIndex].isEditing = true;
+
+      updatedEditing[projectBeingRenamedIndex].updatedName = action.updatedName;
+
       return {
         ...state,
-        isEditing: true,
+        projects: updatedEditing,
       };
     case SAVE_PROJECT_NAME:
+      var projectBeingSaved = action.projectId;
+
+      var projectBeingSavedIndex = state.projects.findIndex(project => project.channel = projectBeingSaved);
+
+      var updatedForSave = [...state.projects];
+      updatedForSave[projectBeingSavedIndex].name = updatedForSave[projectBeingSavedIndex].updatedName;
+      updatedForSave[projectBeingSavedIndex].isEditing = false;
+      updatedForSave[projectBeingSavedIndex].isSaving = true;
+
       return {
         ...state,
-        isSaving: true,
+        projects: updatedForSave,
       };
     case SAVE_SUCCESS:
       return {
         ...state,
-        isSaving: false
       };
     case SAVE_FAILURE:
       return {
         ...state,
-        isSaving: false,
       };
     default:
       return state;
@@ -241,8 +257,8 @@ export function unpublishProject(projectId) {
   };
 }
 
-export function startRenamingProject(projectId) {
-  return {type: START_RENAMING_PROJECT, projectId};
+export function startRenamingProject(projectId, updatedName) {
+  return {type: START_RENAMING_PROJECT, projectId, updatedName};
 }
 
 export function publishSuccess(lastPublishedAt, lastPublishedProjectData) {
@@ -252,7 +268,7 @@ export function publishSuccess(lastPublishedAt, lastPublishedProjectData) {
 
 export function saveProjectName(projectId, updatedName) {
   return dispatch => {
-    dispatch({type: SAVE_PROJECT_NAME});
+    dispatch({type: SAVE_PROJECT_NAME, projectId});
     return new Promise((resolve, reject) => {
       channelsApi.withProjectId(projectId).ajax(
         'POST',

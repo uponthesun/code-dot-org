@@ -86,15 +86,16 @@ const thumbnailFormatter = function (thumbnailUrl, {rowData}) {
 };
 
 const nameFormatter = (projectName, {rowData}) => {
-  const updatedName = rowData.isEditing ? this.props.editingData[rowData.id].name : '';
+  const updatedName = rowData.isEditing ? rowData.updatedName : '';
+
   return (
     <PersonalProjectsNameCell
       id={rowData.id}
       projectId={rowData.channel}
       projectType={rowData.type}
       projectName={projectName}
-      updatedName={updatedName}
       isEditing={rowData.isEditing}
+      updatedName={updatedName}
     />
   );
 };
@@ -105,6 +106,8 @@ const actionsFormatter = (actions, {rowData}) => {
       isPublished={!!rowData.publishedAt}
       projectId={rowData.channel}
       projectType={rowData.type}
+      isEditing={rowData.isEditing}
+      updatedName={rowData.updatedName}
     />
   );
 };
@@ -125,7 +128,6 @@ const publishedAtFormatter = (publishedAt) => {
 class PersonalProjectsTable extends React.Component {
   static propTypes = {
     personalProjectsList: PropTypes.arrayOf(personalProjectDataPropType).isRequired,
-    editingData: PropTypes.object,
   };
 
   state = {
