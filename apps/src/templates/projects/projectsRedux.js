@@ -18,7 +18,8 @@ const UNPUBLISH_REQUEST  = 'projects/UNPUBLISH_REQUEST';
 const UNPUBLISH_SUCCESS  = 'projects/UNPUBLISH_SUCCESS';
 const UNPUBLISH_FAILURE  = 'projects/UNPUBLISH_FAILURE';
 
-const SAVE_REQUEST = 'projects/SAVE_REQUEST';
+const START_RENAMING_PROJECT = 'projects/START_RENAMING_PROJECT';
+const SAVE_PROJECT_NAME = 'projects/SAVE_PROJECT_NAME';
 const SAVE_SUCCESS = 'projects/SAVE_SUCCESS';
 const SAVE_FAILURE = 'project/SAVE_FAILURE';
 
@@ -136,21 +137,26 @@ function personalProjectsList(state = initialPersonalProjectsList, action) {
         ...state,
         isUnpublishPending: false,
       };
-      case SAVE_REQUEST:
-        return {
-          ...state,
-          isSaving: true,
-        };
-      case SAVE_SUCCESS:
-        return {
-          ...state,
-          isSaving: false
-        };
-      case SAVE_FAILURE:
-        return {
-          ...state,
-          isSaving: false,
-        };
+    case START_RENAMING_PROJECT:
+      return {
+        ...state,
+        isEditing: true,
+      };
+    case SAVE_PROJECT_NAME:
+      return {
+        ...state,
+        isSaving: true,
+      };
+    case SAVE_SUCCESS:
+      return {
+        ...state,
+        isSaving: false
+      };
+    case SAVE_FAILURE:
+      return {
+        ...state,
+        isSaving: false,
+      };
     default:
       return state;
   }
@@ -233,6 +239,10 @@ export function unpublishProject(projectId) {
       );
     });
   };
+}
+
+export function startRenamingProject(projectId) {
+  return {type: START_RENAMING_PROJECT, projectId};
 }
 
 export function publishSuccess(lastPublishedAt, lastPublishedProjectData) {

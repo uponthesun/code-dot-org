@@ -71,7 +71,7 @@ class PersonalProjectsTableActionsCell extends Component {
         {!isRenaming  &&
           <QuickActionsCell>
             <PopUpMenu.Item
-              onClick={() => console.log("Rename was clicked")}
+              onClick={this.onRename}
             >
               {i18n.rename()}
             </PopUpMenu.Item>

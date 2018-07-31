@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {tableLayoutStyles} from "../tables/tableConstants";
-import i18n from "@cdo/locale";
+import {connect} from 'react-redux';
 
 const styles = {
   inputBox: {
@@ -8,7 +8,7 @@ const styles = {
   },
 };
 
-export default class PersonalProjectsNameCell extends Component {
+class PersonalProjectsNameCell extends Component {
   static propTypes = {
     projectId: PropTypes.string.isRequired,
     projectType: PropTypes.string.isRequired,
@@ -38,7 +38,7 @@ export default class PersonalProjectsNameCell extends Component {
               style={styles.inputBox}
               value={updatedName}
               onChange={this.onChangeName}
-              placeholder={i18n.nameRequired()}
+              placeholder={projectName}
             />
           </div>
         }
@@ -46,3 +46,7 @@ export default class PersonalProjectsNameCell extends Component {
     );
   }
 }
+
+export default connect(state => ({
+  isEditing: state.projects.personalProjectsList.isEditing,
+}))(PersonalProjectsNameCell);
