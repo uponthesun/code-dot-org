@@ -18,6 +18,10 @@ const UNPUBLISH_REQUEST  = 'projects/UNPUBLISH_REQUEST';
 const UNPUBLISH_SUCCESS  = 'projects/UNPUBLISH_SUCCESS';
 const UNPUBLISH_FAILURE  = 'projects/UNPUBLISH_FAILURE';
 
+const SAVE_REQUEST = 'projects/SAVE_REQUEST';
+const SAVE_SUCCESS = 'projects/SAVE_SUCCESS';
+const SAVE_FAILURE = 'project/SAVE_FAILURE';
+
 // Reducers
 
 const initialSelectedGalleryState = Galleries.PUBLIC;
@@ -132,6 +136,21 @@ function personalProjectsList(state = initialPersonalProjectsList, action) {
         ...state,
         isUnpublishPending: false,
       };
+      case SAVE_REQUEST:
+        return {
+          ...state,
+          isSaving: true,
+        };
+      case SAVE_SUCCESS:
+        return {
+          ...state,
+          isSaving: false
+        };
+      case SAVE_FAILURE:
+        return {
+          ...state,
+          isSaving: false,
+        };
     default:
       return state;
   }

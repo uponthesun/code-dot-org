@@ -76,7 +76,7 @@ class PersonalProjectsTableActionsCell extends Component {
               {i18n.rename()}
             </PopUpMenu.Item>
             <PopUpMenu.Item
-              onClick={this.onRename}
+              onClick={() => console.log("Remix was clicked")}
             >
               {i18n.remix()}
             </PopUpMenu.Item>
