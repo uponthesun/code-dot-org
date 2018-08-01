@@ -151,23 +151,20 @@ function personalProjectsList(state = initialPersonalProjectsList, action) {
         ...state,
         projects: updatedEditing,
       };
-    case SAVE_PROJECT_NAME:
-      var projectBeingSaved = action.projectId;
-
-      var projectBeingSavedIndex = state.projects.findIndex(project => project.channel = projectBeingSaved);
-
-      var updatedForSave = [...state.projects];
-      updatedForSave[projectBeingSavedIndex].name = updatedForSave[projectBeingSavedIndex].updatedName;
-      updatedForSave[projectBeingSavedIndex].isEditing = false;
-      updatedForSave[projectBeingSavedIndex].isSaving = true;
-
-      return {
-        ...state,
-        projects: updatedForSave,
-      };
     case SAVE_SUCCESS:
+      var recentlySavedProjectId = action.projectId;
+
+      var recentlySavedProjectIndex = state.projects.findIndex(project => project.channel = recentlySavedProjectId);
+
+      var savedProjects = [...state.projects];
+      savedProjects[recentlySavedProjectIndex].name =
+      savedProjects[recentlySavedProjectIndex].updatedName;
+      savedProjects[recentlySavedProjectIndex].isSaving = false;
+      savedProjects[recentlySavedProjectIndex].isEditing = false;
+
       return {
         ...state,
+        projects: savedProjects,
       };
     case SAVE_FAILURE:
       return {
@@ -266,25 +263,36 @@ export function publishSuccess(lastPublishedAt, lastPublishedProjectData) {
   lastPublishedProjectData};
 }
 
-export function saveProjectName(projectId, updatedName) {
-  return dispatch => {
-    dispatch({type: SAVE_PROJECT_NAME, projectId});
-    return new Promise((resolve, reject) => {
-      channelsApi.withProjectId(projectId).ajax(
-        'POST',
-        'unpublish',
-        () => {
-          dispatch({
-            type: SAVE_SUCCESS,
-          });
-          resolve();
-        },
-        err => {
-          dispatch({type: SAVE_FAILURE});
-          reject(err);
-        },
-        null
-      );
+export function saveSuccess(projectId) {
+  return {type: SAVE_SUCCESS, projectId};
+}
+
+const updateProjectNameOnServer = (projectId, updatedName, onComplete) => {
+  $.ajax({
+    url: `/v3/channels/${projectId}`,
+    method: 'GET',
+    type: 'json',
+    contentType: 'application/json;charset=UTF-8',
+  }).done((data) => {
+    console.log("data", data)
+    console.log("updatedName in updateProjectNameOnServer", updatedName)
+    data.name = updatedName
+    console.log("data with new name", data)
+    onComplete(null, data);
+  }).fail((jqXhr, status) => {
+    onComplete(status, jqXhr.responseJSON);
+  });
+};
+
+export const saveProjectName = (projectId, updatedName) => {
+  return (dispatch, getState) => {
+    const state = getState().projects;
+    console.log("updatedName in saveProjectName", updatedName)
+    updateProjectNameOnServer(projectId, updatedName, (error, data) => {
+      if (error) {
+        console.error(error);
+      }
+      dispatch(saveSuccess(projectId));
     });
   };
-}
+};
