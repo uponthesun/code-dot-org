@@ -61,6 +61,7 @@ class ChannelsApi < Sinatra::Base
   # the remix parent of the newly-created channel.
   #
   post '/v3/channels' do
+    puts "posting to v3/channels in attempt to remix!"
     unsupported_media_type unless request.content_type.to_s.split(';').first == 'application/json'
     unsupported_media_type unless request.content_charset.to_s.downcase == 'utf-8'
 
@@ -69,14 +70,21 @@ class ChannelsApi < Sinatra::Base
     begin
       _, remix_parent_id = storage_decrypt_channel_id(request.GET['parent']) if request.GET['parent']
     rescue ArgumentError, OpenSSL::Cipher::CipherError
+      puts "cipher error"
       bad_request
     end
-
+    puts "request.body.read"
+    puts request.body.read
+    puts "JSON.parse(request.body.read)"
+    puts JSON.parse(request.body.read)
     begin
       data = JSON.parse(request.body.read)
     rescue JSON::ParserError
+      puts "JSON parser error"
       bad_request
     end
+    puts "Data is a Hash?"
+    puts data.is_a? Hash
     bad_request unless data.is_a? Hash
 
     timestamp = Time.now
@@ -94,7 +102,8 @@ class ChannelsApi < Sinatra::Base
       published_at = timestamp
       data.delete('shouldPublish')
     end
-
+    puts "data"
+    puts data
     id = storage_app.create(
       data.merge('createdAt' => timestamp, 'updatedAt' => timestamp),
       ip: request.ip,

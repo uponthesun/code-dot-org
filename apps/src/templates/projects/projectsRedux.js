@@ -19,6 +19,10 @@ const UNPUBLISH_REQUEST  = 'projects/UNPUBLISH_REQUEST';
 const UNPUBLISH_SUCCESS  = 'projects/UNPUBLISH_SUCCESS';
 const UNPUBLISH_FAILURE  = 'projects/UNPUBLISH_FAILURE';
 
+const REMIX_PROJECT = 'projects/REMIX_PROJECT';
+const REMIX_SUCCESS = 'projects/REMIX_SUCCESS';
+const REMIX_FAILURE = 'projects/REMIX_FAILURE';
+
 // Reducers
 
 const initialSelectedGalleryState = Galleries.PUBLIC;
@@ -145,6 +149,10 @@ function personalProjectsList(state = initialPersonalProjectsList, action) {
         ...state,
         projects: projects,
       };
+    case REMIX_SUCCESS:
+      return {
+        ...state,
+      };
     default:
       return state;
   }
@@ -204,6 +212,56 @@ export function setHasOlderProjects(hasOlderProjects, projectType) {
 export function setPersonalProjectsList(personalProjectsList) {
   return {type: SET_PERSONAL_PROJECTS_LIST, personalProjectsList};
 }
+
+export function remixSuccess(projectId) {
+  return {type: REMIX_SUCCESS};
+}
+
+// export function remixProject(projectId) {
+//   return dispatch => {
+//     return new Promise((resolve, reject) => {
+//       channelsApi.withProjectId(projectId).ajax(
+//         'POST',
+//         '',
+//         () => {
+//           dispatch({type: REMIX_SUCCESS});
+//           resolve();
+//         },
+//         err => {
+//           dispatch({type: REMIX_FAILURE});
+//           reject(err);
+//         },
+//         null
+//       );
+//     });
+//   };
+// }
+
+export const remixProjectOnServer = (projectId, onComplete) => {
+  console.log("REMIX PROJECT ON SERVER!")
+  $.ajax({
+    url: `/v3/channels?parent=${projectId}`,
+    method: 'POST',
+    contentType: 'application/json;charset=UTF-8',
+    dataType: 'json',
+    data: JSON.stringify({foo: {bar: 1}})
+  }).done((data) => {
+    onComplete(null, data);
+  }).fail((jqXhr, status) => {
+    onComplete(status, jqXhr.responseJSON);
+  });
+};
+
+export const remixProject = (projectId) => {
+  return (dispatch, getState) => {
+    const state = getState().projects;
+    remixProjectOnServer(projectId,(error, data) => {
+      if (error) {
+        console.error(error);
+      }
+    });
+  };
+};
 
 export function unpublishProject(projectId) {
   return dispatch => {

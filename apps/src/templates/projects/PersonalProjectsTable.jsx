@@ -86,7 +86,7 @@ const thumbnailFormatter = function (thumbnailUrl, {rowData}) {
 };
 
 const nameFormatter = (projectName, {rowData}) => {
-  const url = `/projects/${rowData.type}/${rowData.channel}/`;
+  const url = `/projects/${rowData.type}/${rowData.channel}/edit`;
   return <a style={tableLayoutStyles.link} href={url} target="_blank">{projectName}</a>;
 };
 

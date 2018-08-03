@@ -6,7 +6,10 @@ import color from "../../util/color";
 import FontAwesome from '../FontAwesome';
 import i18n from '@cdo/locale';
 import {showPublishDialog} from './publishDialog/publishDialogRedux';
-import {unpublishProject} from './projectsRedux';
+import {
+  unpublishProject,
+  remixProject,
+} from './projectsRedux';
 import {showDeleteDialog} from './deleteDialog/deleteProjectDialogRedux';
 
 export const styles = {
@@ -22,7 +25,8 @@ class PersonalProjectsTableActionsCell extends Component {
     projectType: PropTypes.string.isRequired,
     showPublishDialog: PropTypes.func.isRequired,
     unpublishProject: PropTypes.func.isRequired,
-    showDeleteDialog: PropTypes.func.isRequired
+    showDeleteDialog: PropTypes.func.isRequired,
+    remixProject: PropTypes.func.isRequired,
   };
 
   state = {
@@ -45,6 +49,10 @@ class PersonalProjectsTableActionsCell extends Component {
     this.props.showDeleteDialog(this.props.projectId);
   };
 
+  onRemix = () => {
+    this.props.remixProject(this.props.projectId);
+  };
+
   render() {
     return (
       <QuickActionsCell>
@@ -54,7 +62,7 @@ class PersonalProjectsTableActionsCell extends Component {
           {i18n.rename()}
         </PopUpMenu.Item>
         <PopUpMenu.Item
-          onClick={() => console.log("Remix was clicked")}
+          onClick={this.onRemix}
         >
           {i18n.remix()}
         </PopUpMenu.Item>
@@ -94,5 +102,8 @@ export default connect(state => ({}), dispatch => ({
   },
   showDeleteDialog(projectId) {
     dispatch(showDeleteDialog(projectId));
-  }
+  },
+  remixProject(projectId) {
+    dispatch(remixProject(projectId));
+  },
 }))(PersonalProjectsTableActionsCell);
