@@ -102,7 +102,7 @@ class PegasusTest < Minitest::Test
     DB.disconnect
     DASHBOARD_DB.disconnect
 
-    results = Parallel.map(all_documents, in_processes: (Parallel.processor_count - 1)) do |page|
+    results = Parallel.map(all_documents, in_processes: 0) do |page|
       site = page[:site]
       uri = page[:uri]
 
