@@ -16,6 +16,8 @@ import defaultSprites from '@cdo/apps/gamelab/defaultSprites.json';
 import { getStore, registerReducers } from '@cdo/apps/redux';
 
 let poolField, nameField, helperEditor;
+let blockNameChange=0;
+let blockCategoryChange=0;
 
 $(document).ready(() => {
   registerReducers({animationList: animationListModule});
@@ -41,6 +43,20 @@ $(document).ready(() => {
   poolField.addEventListener('change', fixupJson);
 
   $(".alert.alert-success").delay(5000).fadeOut(1000);
+
+  $('#block_name').bind('input', function () {
+    if (blockNameChange >= 1) {
+     alert('You have updated the name of this block. Did you mean to clone it instead?');
+    }
+    blockNameChange++;
+  });
+
+  $('#block_category').bind('input', function () {
+    if (blockCategoryChange >= 1) {
+     alert('You have updated the category of this block. Did you mean to clone it instead?');
+    }
+    blockCategoryChange++;
+  });
 });
 
 let config;
