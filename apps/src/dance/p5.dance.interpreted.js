@@ -29,16 +29,20 @@ function randomNumber(min, max) {
 function getCueList() {
   var timestamps = [];
   var measures = [];
+  var peaks = [];
   for (var i = 0; i < inputEvents.length; i++) {
     if (inputEvents[i].type === 'cue-seconds') {
       timestamps.push(inputEvents[i].param);
     } else if (inputEvents[i].type === 'cue-measures') {
       measures.push(inputEvents[i].param);
+    } else if (inputEvents[i].type === 'Dance.fft.isPeak') {
+      peaks.push(inputEvents[i].param);
     }
   }
   return {
     seconds: timestamps,
-    measures: measures
+    measures: measures,
+    peaks: peaks
   };
 }
 
