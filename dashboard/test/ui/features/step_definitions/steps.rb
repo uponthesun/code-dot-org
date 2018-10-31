@@ -679,6 +679,11 @@ Then /^element "([^"]*)" is hidden$/ do |selector|
   expect(element_visible?(selector)).to eq(false)
 end
 
+And (/^I see (\d*) options in the dropdown "([^"]*)"/) do |option_num, selector|
+  select_options = @browser.execute_script("return $('#{selector} option')")
+  expect(select_options.length === option_num.to_i).to eq(true)
+end
+
 def has_class?(selector, class_name)
   @browser.execute_script("return $(#{selector.dump}).hasClass('#{class_name}')")
 end
@@ -1333,6 +1338,22 @@ last_shared_url = nil
 Then /^I save the share URL$/ do
   wait_short_until {@button = @browser.find_element(id: 'sharing-input')}
   last_shared_url = @browser.execute_script("return document.getElementById('sharing-input').value")
+end
+
+When /^I open the share dialog$/ do
+  Retryable.retryable(on: RSpec::Expectations::ExpectationNotMetError, sleep: 10, tries: 3) do
+    steps <<-STEPS
+      When I click selector ".project_share"
+      And I wait to see a dialog titled "Share your project"
+    STEPS
+  end
+end
+
+When /^I navigate to the shared version of my project$/ do
+  steps <<-STEPS
+    When I open the share dialog
+    And I navigate to the share URL
+  STEPS
 end
 
 Then /^I navigate to the share URL$/ do

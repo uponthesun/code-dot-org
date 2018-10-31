@@ -10,9 +10,13 @@ import DanceVisualizationColumn from './DanceVisualizationColumn';
 import Sounds from '../Sounds';
 import {TestResults} from '../constants';
 import {DanceParty} from '@code-dot-org/dance-party';
+import danceMsg from './locale';
 import {reducers, setSong} from './redux';
 import trackEvent from '../util/trackEvent';
 import {SignInState} from '../code-studio/progressRedux';
+import logToCloud from '../logToCloud';
+
+import {saveReplayLog} from '../code-studio/components/shareDialogRedux';
 
 const ButtonState = {
   UP: 0,
@@ -259,18 +263,29 @@ Dance.prototype.afterInject_ = function () {
     ].join(','));
   }
 
+  const recordReplayLog = this.shouldShowSharing();
   this.nativeAPI = new DanceParty({
     onPuzzleComplete: this.onPuzzleComplete.bind(this),
     playSound: audioCommands.playSound,
-    recordReplayLog: this.shouldShowSharing(),
+    recordReplayLog,
     onHandleEvents: this.onHandleEvents.bind(this),
     onInit: () => {
-      const spriteConfig = new Function('World', this.level.customHelperLibrary);
-      this.nativeAPI.init(spriteConfig);
       this.danceReadyPromiseResolve();
+      // Log this so we can learn about how long it is taking for DanceParty to
+      // load of all of its assets in the wild (will use the timeSinceLoad attribute)
+      logToCloud.addPageAction(logToCloud.PageAction.DancePartyOnInit, {
+        share: this.share
+      }, 1 / 20);
     },
+    spriteConfig: new Function('World', this.level.customHelperLibrary),
     container: 'divDance',
   });
+  /** Expose for testing **/
+  window.__DanceTestInterface = this.nativeAPI.getTestInterface();
+
+  if (recordReplayLog) {
+    getStore().dispatch(saveReplayLog(this.nativeAPI.getReplayLog()));
+  }
 };
 
 /**
@@ -295,12 +310,14 @@ Dance.prototype.onPuzzleComplete = function (result, message) {
   // Stop everything on screen.
   this.reset();
 
+  const danceMessage = message ? danceMsg[message]() : '';
+
   if (result === true) {
     this.testResults = TestResults.ALL_PASS;
-    this.message = message;
+    this.message = danceMessage;
   } else if (result === false) {
     this.testResults = TestResults.APP_SPECIFIC_FAIL;
-    this.message = message;
+    this.message = danceMessage;
   } else {
     this.testResults = TestResults.FREE_PLAY;
   }
@@ -477,7 +494,7 @@ Dance.prototype.initInterpreter = function () {
     },
   };
 
-  let code = require('!!raw-loader!./p5.dance.interpreted');
+  let code = require('!!raw-loader!@code-dot-org/dance-party/src/p5.dance.interpreted');
   code += this.studioApp_.getCode();
 
   const events = {
