@@ -27,7 +27,7 @@ fi
 # Restore apps/node_modules, apps/build, and apps/.babel_cache
 mkdir /home/circleci/repocache || true
 ls /home/circleci/repocache
-cp -r /home/circleci/repocache/* .
+cp -r /home/circleci/repocache/* . || true
 ls apps/nodemodules
 ls apps/build
 
