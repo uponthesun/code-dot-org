@@ -17,10 +17,14 @@ build:
   cache_dir_list:
     - /home/circleci/.rbenv
     - /home/circleci/.cache
-    - /var/lib/mysql
+#    - /var/lib/mysql
 #    - $SHIPPABLE_BUILD_DIR/apps/node_modules
   ci:
-    - echo $SHIPPABLE_BUILD_DIR
     - pwd
+    - whoami
+    - id -u
+    - id -g
+    - find /home/circleci/.rbenv
+    - env
     - /entrypoint.sh docker/unit_tests.sh
     - cat log/chat_messages.log
