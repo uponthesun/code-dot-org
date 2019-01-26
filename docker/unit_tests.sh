@@ -25,6 +25,7 @@ if $(git rev-parse --is-shallow-repository); then
 fi
 
 # Restore apps/node_modules, apps/build, and apps/.babel_cache
+mkdir /home/circleci/repocache || true
 ls /home/circleci/repocache
 cp -r /home/circleci/repocache/* .
 ls apps/nodemodules
@@ -72,7 +73,7 @@ RAKE_VERBOSE=true mispipe "bundle exec rake build --trace" "ts '[%Y-%m-%d %H:%M:
 bundle exec rake circle:run_tests --trace
 
 # Cache apps/node_modules, apps/build, and apps/.babel_cache
-rm -r /home/circleci/repocache/apps/*
+rm -rf /home/circleci/repocache/apps && mkdir /home/circleci/repocache/apps
 cp -r apps/node_modules /home/circleci/repocache/apps
 cp -r apps/build /home/circleci/repocache/apps
 cp -r apps/.babel_cache /home/circleci/repocache/apps
