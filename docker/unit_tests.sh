@@ -63,3 +63,5 @@ RAKE_VERBOSE=true mispipe "bundle exec rake build --trace" "ts '[%Y-%m-%d %H:%M:
 
 # unit tests
 bundle exec rake circle:run_tests --trace
+
+mispipe "echo 'Ending timestamp'" ts
