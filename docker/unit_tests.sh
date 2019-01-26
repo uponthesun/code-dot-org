@@ -6,6 +6,8 @@
 
 set -xe
 
+mispipe "echo 'Starting timestamp'" ts
+
 export CI=true
 export RAILS_ENV=test
 export RACK_ENV=test
@@ -18,7 +20,7 @@ if $(git rev-parse --is-shallow-repository); then
     git remote set-branches --add origin staging
     git remote set-branches --add origin test
     git remote set-branches --add origin production
-    git fetch --depth 5 -v
+    git fetch --depth 1 -v
     git branch -a
 fi
 
@@ -27,7 +29,7 @@ mysql -V
 # rbenv-doctor https://github.com/rbenv/rbenv-installer#readme
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
 
-bundle install --verbose
+mispipe "bundle install --verbose" ts
 
 # set up locals.yml
 set +x

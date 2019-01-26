@@ -1,6 +1,6 @@
 language: none
 
-depth: 5
+depth: 1
 
 git:
  submodules: false
