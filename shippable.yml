@@ -1,6 +1,6 @@
 language: none
 
-depth: 1
+depth: 50
 
 git:
  submodules: false
@@ -17,6 +17,7 @@ build:
   cache_dir_list:
     - /home/circleci/.rbenv
     - /home/circleci/.cache
+    - /home/circleci/repocache
 #    - /var/lib/mysql
 #    - $SHIPPABLE_BUILD_DIR/apps/node_modules
   ci:

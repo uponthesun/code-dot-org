@@ -20,9 +20,16 @@ if $(git rev-parse --is-shallow-repository); then
     git remote set-branches --add origin staging
     git remote set-branches --add origin test
     git remote set-branches --add origin production
-    git fetch --depth 1 -v
+    git fetch --depth 50 -v
     git branch -a
 fi
+
+# Restore apps/node_modules, apps/build, and apps/.babel_cache
+ls /home/circleci/repocache
+cp -r /home/circleci/repocache/* .
+ls apps/nodemodules
+ls apps/build
+
 
 mysql -V
 
@@ -63,5 +70,11 @@ RAKE_VERBOSE=true mispipe "bundle exec rake build --trace" "ts '[%Y-%m-%d %H:%M:
 
 # unit tests
 bundle exec rake circle:run_tests --trace
+
+# Cache apps/node_modules, apps/build, and apps/.babel_cache
+rm -r /home/circleci/repocache/apps/*
+cp -r apps/node_modules /home/circleci/repocache/apps
+cp -r apps/build /home/circleci/repocache/apps
+cp -r apps/.babel_cache /home/circleci/repocache/apps
 
 mispipe "echo 'Ending timestamp'" ts
