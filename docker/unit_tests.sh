@@ -28,8 +28,7 @@ fi
 mkdir /home/circleci/repocache || true
 ls /home/circleci/repocache
 cp -r /home/circleci/repocache/* . || true
-ls apps/nodemodules
-ls apps/build
+ls /home/circleci/repocache
 
 
 mysql -V
