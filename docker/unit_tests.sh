@@ -24,7 +24,7 @@ if $(git rev-parse --is-shallow-repository); then
     git branch -a
 fi
 
-# Restore apps/node_modules, apps/build, and apps/.babel_cache
+# Restore apps/node_modules, apps/build from cache
 mkdir /home/circleci/repocache || true
 ls /home/circleci/repocache
 cp -r /home/circleci/repocache/* . || true
@@ -71,10 +71,9 @@ RAKE_VERBOSE=true mispipe "bundle exec rake build --trace" "ts '[%Y-%m-%d %H:%M:
 # unit tests
 bundle exec rake circle:run_tests --trace
 
-# Cache apps/node_modules, apps/build, and apps/.babel_cache
+# Cache apps/node_modules, apps/build
 rm -rf /home/circleci/repocache/apps && mkdir /home/circleci/repocache/apps
-cp -r apps/node_modules /home/circleci/repocache/apps
-cp -r apps/build /home/circleci/repocache/apps
-cp -r apps/.babel_cache /home/circleci/repocache/apps
+cp -r apps/node_modules /home/circleci/repocache/apps || true
+cp -r apps/build /home/circleci/repocache/apps || true
 
 mispipe "echo 'Ending timestamp'" ts
