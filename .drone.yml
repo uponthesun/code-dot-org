@@ -7,9 +7,6 @@ clone:
 steps:
 - name: testing
   image: wintercdo/code-dot-org:0.7
-  when:
-    branch:
-    - drone
   environment:
     CLOUDFRONT_KEY_PAIR_ID:
       from_secret: CLOUDFRONT_KEY_PAIR_ID
@@ -29,3 +26,7 @@ steps:
     - ls -alh
     - sudo chown -R circleci:circleci .
     - /entrypoint.sh docker/unit_tests.sh
+
+trigger:
+  branch:
+  - drone-old
