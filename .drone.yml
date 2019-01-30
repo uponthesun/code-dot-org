@@ -4,6 +4,12 @@ name: ui
 clone:
   depth: 50
 
+services:
+- name: ui-tests-redis
+  image: redis
+  ports:
+  - 6379
+
 steps:
 - name: ui-tests
   image: wintercdo/code-dot-org:0.7
