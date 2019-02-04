@@ -1140,8 +1140,6 @@ FactoryGirl.define do
     form_data {form_data_hash.to_json}
   end
 
-  factory :pd_workshop_autoenrolled_application, parent: :pd_teacher1819_application
-
   # default to do_you_approve: other
   factory :pd_principal_approval1920_application_hash, parent: :pd_principal_approval1920_application_hash_common do
     approved_other
@@ -1478,6 +1476,7 @@ FactoryGirl.define do
       liability_waiver "Yes"
       live_far_away "Yes"
       need_hotel "No"
+      need_disability_support "No"
       photo_release "Yes"
     end
 
